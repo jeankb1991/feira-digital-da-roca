@@ -3,5 +3,10 @@
 // Feira Digital da Roça — Projeto Integrador 3º Ano A
 // ============================================================
 
-const SUPABASE_URL = 'https://SEU_PROJETO.supabase.co';
-const SUPABASE_KEY = 'SUA_ANON_KEY_AQUI';
+// ============================================================
+// js/config.js — Configuração do Supabase
+// Feira Digital da Roça — Projeto Integrador 3º Ano A
+// ============================================================
+
+const SUPABASE_URL = 'https://awvwhwrhiofmrtcjdfth.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_jaHZMYC3kJ6LAlaRzYsVpA_b3Qb0ak_'; // Clique no ícone de cópia ao lado da "Publishable key" na sua tela e cole aqui
