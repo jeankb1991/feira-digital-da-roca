@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Marketplace Rural: Plataforma Web para Venda Direta de Produtos da Agricultura Familiar. CETI Malaquias Ribeiro Damasceno — São Lourenço do Piauí, PI.">
+  <meta name="theme-color" content="#2D6A4F">
+  <meta property="og:title" content="Marketplace Rural — Agricultura Familiar">
+  <meta property="og:description" content="Conectando agricultores familiares e consumidores de São Lourenço do Piauí sem intermediários.">
+  <meta property="og:type" content="website">
+  <title>Marketplace Rural — Agricultura Familiar | CETI Malaquias Ribeiro Damasceno</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS crítico inline -->
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:#F4FAF6;color:#1A2E24;overflow-x:hidden}
+    .hidden{display:none!important}
+    .loading-screen{
+      position:fixed;inset:0;
+      background:linear-gradient(135deg,#1B4332 0%,#2D6A4F 60%,#52B788 100%);
+      display:flex;align-items:center;justify-content:center;z-index:9999;
+      transition:opacity .6s ease,visibility .6s ease
+    }
+    .loading-screen.fade-out{opacity:0;visibility:hidden}
+    .loading-inner{text-align:center;color:white;padding:20px}
+    .loading-logo-wrap{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:24px}
+    .loading-leaf{font-size:2.5rem;animation:leafSway 2s ease-in-out infinite}
+    @keyframes leafSway{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
+    .loading-brand{font-family:'Outfit',sans-serif;font-size:1.75rem;font-weight:700}
+    .loading-school{font-size:.85rem;opacity:.8;margin-top:4px}
+    .loading-msg{margin-top:20px;font-size:.9rem;opacity:.75}
+    .spinner{
+      width:40px;height:40px;
+      border:3px solid rgba(255,255,255,.3);
+      border-top-color:white;border-radius:50%;
+      margin:0 auto;animation:spin .9s linear infinite
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    #app{min-height:100vh;padding-top:68px}
+    .badge-fav{
+      background:#EF4444;color:white;font-size:0.75rem;
+      padding:2px 7px;border-radius:999px;font-weight:700;margin-left:4px;
+      display:inline-block;vertical-align:middle;
+    }
+    .badge-connection{
+      font-size:0.75rem;padding:3px 8px;border-radius:999px;
+      font-weight:600;display:inline-flex;align-items:center;gap:4px;
+    }
+    .badge-connection.online{background:#DCFCE7;color:#166534;border:1px solid #A7F3C0}
+    .badge-connection.demo{background:#FEF3C7;color:#92400E;border:1px solid #FDE68A}
+    .fav-btn{
+      position:absolute;top:12px;right:12px;z-index:3;
+      background:rgba(255,255,255,0.9);border:none;outline:none;
+      width:36px;height:36px;border-radius:50%;display:flex;
+      align-items:center;justify-content:center;font-size:1.15rem;
+      cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.15);
+      transition:transform 0.15s ease,background 0.2s ease;
+    }
+    .fav-btn:hover{transform:scale(1.1);background:#fff}
+    .fav-btn.active{color:#EF4444}
+  </style>
+
+  <!-- Stylesheet principal -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       LOADING SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="loading-screen" class="loading-screen">
+    <div class="loading-inner">
+      <div class="loading-logo-wrap">
+        <span class="loading-leaf">🌾</span>
+        <div>
+          <span class="loading-brand">Marketplace Rural</span>
+          <div class="loading-school">CETI Malaquias Ribeiro Damasceno · São Lourenço do Piauí</div>
+        </div>
+      </div>
+      <div class="spinner"></div>
+      <p class="loading-msg">Carregando catálogo da agricultura familiar...</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TOAST NOTIFICATIONS
+  ══════════════════════════════════════════ -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ══════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-inner">
+
+      <!-- Brand -->
+      <a href="#" class="navbar-brand" id="nav-home">
+        <span class="brand-icon">🌾</span>
+        <div>
+          <span class="brand-name">Marketplace Rural</span>
+          <span style="display:block;font-size:0.68rem;color:var(--primary);font-weight:500;letter-spacing:0.3px;">SÃO LOURENÇO DO PIAUÍ</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Links -->
+      <div class="nav-links" id="nav-links">
+        <a href="#catalog"   class="nav-link" id="link-catalog">Catálogo</a>
+        <a href="#producers" class="nav-link" id="link-producers">Produtores</a>
+        <a href="#favorites" class="nav-link" id="link-favorites">❤️ Favoritos <span class="badge-fav" id="badge-fav">0</span></a>
+      </div>
+
+      <!-- Auth Area & Controls -->
+      <div class="nav-auth">
+        <!-- Botão do Carrinho de Compras -->
+        <button class="btn-cart" id="btn-open-cart" aria-label="Abrir carrinho de compras" title="Ver carrinho de compras">
+          🛒 <span style="font-size:0.85rem">Cesta</span> <span class="badge-cart" id="badge-cart">0</span>
+        </button>
+
+        <!-- Indicador de status da conexão -->
+        <button id="btn-status-conexao" class="badge-connection demo" style="border:none;cursor:pointer;" title="Clique para gerenciar a conexão Supabase">
+          <span id="status-icon">🌱</span> <span id="status-text">Modo Demo</span>
+        </button>
+
+        <!-- Visitante -->
+        <div id="guest-buttons" class="guest-buttons">
+          <a href="#login"    class="btn btn-ghost btn-sm" id="btn-login">Entrar</a>
+          <a href="#register" class="btn btn-primary btn-sm" id="btn-register">Cadastrar</a>
+        </div>
+
+        <!-- Usuário logado -->
+        <div id="user-area" class="user-area hidden">
+          <button class="user-avatar-btn" id="user-avatar-btn" aria-label="Menu do usuário">
+            <span class="avatar-initials" id="avatar-initials">?</span>
+          </button>
+          <div class="user-dropdown" id="user-dropdown">
+            <div class="dropdown-header">
+              <span class="dropdown-name" id="dropdown-name">Usuário</span>
+              <span class="dropdown-role" id="dropdown-role">Produtor</span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <a href="#dashboard"    class="dropdown-item" id="link-dashboard">
+              <span class="di-icon">📊</span> Meu Painel
+            </a>
+            <a href="#profile-edit" class="dropdown-item" id="link-profile-edit">
+              <span class="di-icon">✏️</span> Meu Perfil
+            </a>
+            <a href="#admin" class="dropdown-item hidden" id="link-admin">
+              <span class="di-icon">🛡️</span> Administração
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item item-danger" id="btn-logout">
+              <span class="di-icon">🚪</span> Sair
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu hidden" id="mobile-menu">
+      <a href="#catalog"   class="mobile-nav-link">🛒 Catálogo</a>
+      <a href="#producers" class="mobile-nav-link">👨‍🌾 Produtores</a>
+      <a href="#favorites" class="mobile-nav-link">❤️ Favoritos</a>
+      <button class="btn btn-outline btn-block" id="mobile-cart-btn" style="margin: 8px 0; display:flex; align-items:center; justify-content:center; gap:8px;">
+        🛒 Minha Cesta de Compras (<span class="badge-cart">0</span>)
+      </button>
+      <div class="mobile-divider"></div>
+      <div id="mobile-guest" class="mobile-auth">
+        <a href="#login"    class="btn btn-ghost btn-block">Entrar</a>
+        <a href="#register" class="btn btn-primary btn-block">Cadastrar-se</a>
+      </div>
+      <div id="mobile-user" class="mobile-auth hidden">
+        <a href="#dashboard"    class="btn btn-ghost btn-block">Meu Painel</a>
+        <a href="#profile-edit" class="btn btn-ghost btn-block">Meu Perfil</a>
+        <a href="#admin" class="btn btn-ghost btn-block hidden" id="mobile-admin-link">🛡️ Admin</a>
+        <button class="btn btn-outline-danger btn-block" id="mobile-logout">Sair</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════════
+       MAIN CONTENT (SPA router target)
+  ══════════════════════════════════════════ -->
+  <main id="app"></main>
+
+  <!-- ══════════════════════════════════════════
+       MODAL GENÉRICO
+  ══════════════════════════════════════════ -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box" id="modal-box">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Modal</h3>
+        <button class="modal-close-btn" id="modal-close" aria-label="Fechar">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+      <div class="modal-footer" id="modal-footer"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       CARRINHO DE COMPRAS (DRAWER LATERAL & FAB)
+  ══════════════════════════════════════════ -->
+  <div id="cart-drawer-overlay" class="cart-drawer-overlay hidden">
+    <aside class="cart-drawer" id="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cart-title">
+      <div class="cart-drawer-header">
+        <h2 class="cart-drawer-title" id="cart-title">
+          <span>🛒</span> Cesta de Compras
+        </h2>
+        <button class="cart-close-btn" id="btn-close-cart" aria-label="Fechar cesta">✕</button>
+      </div>
+
+      <div class="cart-drawer-body" id="cart-drawer-body">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+
+      <div class="cart-drawer-footer" id="cart-drawer-footer">
+        <!-- Totais e finalização renderizados dinamicamente -->
+      </div>
+    </aside>
+  </div>
+
+  <!-- Botão Flutuante (FAB) do Carrinho -->
+  <button id="cart-floating-fab" class="cart-floating-fab hidden" aria-label="Abrir cesta de compras">
+    <span>🛒</span>
+    <span id="fab-cart-text">Ver Cesta</span>
+    <span class="badge-cart" id="fab-cart-badge">0</span>
+  </button>
+
+  <!-- ══════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════ -->
+  <!-- Supabase JS v2 via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Configurações do Supabase -->
+  <script src="config.js"></script>
+  <!-- Aplicação Principal -->
+  <script src="app.js"></script>
+
+</body>
+</html>
